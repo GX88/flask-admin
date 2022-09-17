@@ -86,7 +86,7 @@ def save():
 def delete(id):
     user = User.query.filter_by(id=id).first()
     user.role = []
-    
+
     res = User.query.filter_by(id=id).delete()
     db.session.commit()
     if not res:
@@ -98,7 +98,7 @@ def delete(id):
 @admin_user.get('/edit/<int:id>')
 @authorize("admin:user:edit", log=True)
 def edit(id):
-    user = curd.get_one_by_id(User,id)
+    user = curd.get_one_by_id(User, id)
     roles = Role.query.all()
     checked_roles = []
     for r in user.role:
@@ -117,7 +117,10 @@ def update():
     real_name = xss_escape(req_json.get('realName'))
     dept_id = xss_escape(req_json.get('deptId'))
     role_ids = a.split(',')
-    User.query.filter_by(id=id).update({'username': username, 'realname': real_name, 'dept_id': dept_id})
+    try:
+        User.query.filter_by(id=id).update({'username': username, 'realname': real_name, 'dept_id': dept_id})
+    except Exception as e:
+        return fail_api(msg="更新异常：{}".format(e))
     u = User.query.filter_by(id=id).first()
 
     roles = Role.query.filter(Role.id.in_(role_ids)).all()
@@ -214,7 +217,7 @@ def enable():
 def dis_enable():
     _id = request.json.get('userId')
     if _id:
-        res = disable_status(model=User,id=_id)
+        res = disable_status(model=User, id=_id)
         if not res:
             return fail_api(msg="出错啦")
         return success_api(msg="禁用成功")
@@ -229,7 +232,7 @@ def batch_remove():
     for id in ids:
         user = User.query.filter_by(id=id).first()
         user.role = []
-        
+
         res = User.query.filter_by(id=id).delete()
         db.session.commit()
     return success_api(msg="批量删除成功")
