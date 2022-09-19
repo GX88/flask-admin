@@ -1,13 +1,14 @@
 from dotenv import dotenv_values
 import sqlparse
 import pymysql
+
 config = dotenv_values('.flaskenv')
 # MySql配置信息
-HOST = config.get('MYSQL_HOST') or '127.0.0.1'
+HOST = config.get('MYSQL_HOST') or 'localhost'
 PORT = config.get('MYSQL_PORT') or 3306
 DATABASE = config.get('MYSQL_DATABASE') or 'PearAdminFlask'
 USERNAME = config.get('MYSQL_USERNAME') or 'root'
-PASSWORD = config.get('MYSQL_PASSWORD') or '123456'
+PASSWORD = config.get('MYSQL_PASSWORD') or '199907173030bz'
 
 
 def is_exist_database():
